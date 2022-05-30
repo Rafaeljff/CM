@@ -1,5 +1,4 @@
 
-
 %largura de banda de frequência entre canais 
 Safeguard_band=20e3;
 
@@ -29,42 +28,53 @@ Safeguard_band=20e3;
 %para células adjacentes .
 
 
-fq7=fqmax-Fdiv;
-fq6=fq7-Fdiv-Safeguard_band;
-fq5=fq6-Fdiv-Safeguard_band;
-fq4=fq5-Fdiv-Safeguard_band;
-fq3=fq4-Fdiv-Safeguard_band;
-fq2=fq3-Fdiv-Safeguard_band;
-fq1=fqmin;
 
 
-ant1=design(monopole, fq1);
-ant1.Tilt = [90 90 0]; % roda 90%
+
+
+
+fq1=fqmin+Safeguard_band+Fdiv;
+fq2=fq1+Safeguard_band+Fdiv;
+fq3=fq2+Fdiv+Safeguard_band;
+fq4=fq3+Fdiv+Safeguard_band;
+fq5=fq4+Fdiv+Safeguard_band;
+fq6=fq5+Fdiv+Safeguard_band;
+fq7=fq6+Fdiv;
+
+%Serão necessarias antenas diretivas uma vez que se pretende estabelecer
+%um agregado de antenas ao redor da zona de estudo e fazer com que estas
+%sejam direcionadas para o centro da região, para isso tem de ter uma
+%direção de radiação desfazada por volta de 60º entre elas para o centro.
+%anguladas em relacao ao centro 360/6=60 graus
+
+
+ant1=design(yagiUda, fq1);
+ant1.Tilt = [90 90 60]; % roda 90%
 ant1.TiltAxis = [1 0 0;0 1 0; 0 0 1]; % eixo dos xx yy zz ( mexer nos eixo ZZ para mudar a direção)
 
-ant2 = design(monopole, fq2);
+ant2 = design( yagiUda, fq2);
 ant2.Tilt = [90 90 60]; % roda 90%
 ant2.TiltAxis = [1 0 0;0 1 0; 0 0 1]; % eixo dos xx yy zz ( mexer nos eixo ZZ para mudar a direção)
 
 
-ant3 = design(monopole,fq3);
+ant3 = design( yagiUda,fq3);
 ant3.Tilt = [90 90 120]; % roda 90%
 ant3.TiltAxis = [1 0 0;0 1 0; 0 0 1]; % eixo dos xx yy zz ( mexer nos eixo ZZ para mudar a direção)
 
-ant4 = design(monopole,fq4);
+ant4 = design( yagiUda,fq4);
 ant4.Tilt = [90 90 180]; % roda 90%
 ant4.TiltAxis = [1 0 0;0 1 0; 0 0 1];
 
-ant5 = design(monopole,fq5);
+ant5 = design( yagiUda,fq5);
 ant5.Tilt = [90 90 240]; % roda 90%
 ant5.TiltAxis = [1 0 0;0 1 0; 0 0 1];
 
-ant6 = design(monopole,fq6);
+ant6 = design( yagiUda,fq6);
 ant6.Tilt = [90 90 300]; % roda 90%
 ant6.TiltAxis = [1 0 0;0 1 0; 0 0 1];
 
-ant7 = design(monopole,fq7);
-ant7.Tilt = [90 90 360]; % roda 90%
+ant7 = design(reflectorSpherical,fq7);
+ant7.Tilt = [90 90 0]; % roda 90%
 ant7.TiltAxis = [1 0 0;0 1 0; 0 0 1];
 
 %------------------------------------------
@@ -122,13 +132,63 @@ ant7.TiltAxis = [1 0 0;0 1 0; 0 0 1];
 %celulas com frequencias identicas para diferentes estações base que
 %estejam adjacentes.
 
-tx = txsite("NAME","MathWorks", ...
-    "Latitude",39.74725490767334, ...
-    "Longitude",-8.809335058401215, ...
-    "Antenna",[ant1,ant2,ant3,ant4,ant5,ant6,ant7],...  %cada antena tem 
+tx1 = txsite("NAME","MathWorks", ...
+    "Latitude",39.756624, ...
+    "Longitude",-8.925917, ...
+    "Antenna",[ant1],...  %cada antena tem 
     "AntennaHeight",20, ...        % Units: meters
-    "TransmitterFrequency",[fq1,fq2,fq3,fq4,fq5,fq6,fq7],... % Units: Hz
-    "TransmitterPower",300);        % Units: Watts
+    "TransmitterFrequency",[fq1],... % Units: Hz
+    "TransmitterPower",40);  
+
+tx2 = txsite("NAME","MathWorks", ...
+    "Latitude",39.741866, ...
+    "Longitude",-8.947965, ...
+    "Antenna",[ant2],...  %cada antena tem 
+    "AntennaHeight",20, ...        % Units: meters
+    "TransmitterFrequency",[fq2],... % Units: Hz
+    "TransmitterPower",40);      
+
+tx3 = txsite("NAME","MathWorks", ...
+    "Latitude",39.723532, ...
+    "Longitude",-8.948699, ...
+    "Antenna",[ant3],...  %cada antena tem 
+    "AntennaHeight",20, ...        % Units: meters
+    "TransmitterFrequency",[fq3],... % Units: Hz
+    "TransmitterPower",40);      
+
+
+tx4 = txsite("NAME","MathWorks", ...
+    "Latitude",39.74725490767334, ...
+    "Longitude",-8.904104, ...
+    "Antenna",[ant4],...  %cada antena tem 
+    "AntennaHeight",20, ...        % Units: meters
+    "TransmitterFrequency",[fq4,],... % Units: Hz
+    "TransmitterPower",40);      
+tx5 = txsite("NAME","MathWorks", ...
+    "Latitude",39.726750, ...
+    "Longitude",-8.910540, ...
+    "Antenna",[ant5],...  %cada antena tem 
+    "AntennaHeight",20, ...        % Units: meters
+    "TransmitterFrequency",[fq5],... % Units: Hz
+    "TransmitterPower",40);      
+tx6 = txsite("NAME","MathWorks", ...
+    "Latitude",39.718087, ...
+    "Longitude",-8.928441, ...
+    "Antenna",[ant6],...  %cada antena tem 
+    "AntennaHeight",20, ...        % Units: meters
+    "TransmitterFrequency",[fq6],... % Units: Hz
+    "TransmitterPower",40);    
+tx7 = txsite("NAME","MathWorks", ...
+    "Latitude",39.736382, ...
+    "Longitude",-8.925263, ...
+    "Antenna",[ant7],...  %cada antena tem 
+    "AntennaHeight",20, ...        % Units: meters
+    "TransmitterFrequency",[fq7],... % Units: Hz
+    "TransmitterPower",40);      
+
+
+
+% Units: Watts
 % tx = txsite("Name","MathWorks", ...
 %     "Latitude",39.74725490767334, ...
 %     "Longitude",-8.809335058401215, ...
@@ -137,7 +197,7 @@ tx = txsite("NAME","MathWorks", ...
 %     "TransmitterFrequency",[fq1],... % Units: Hz
 %     "TransmitterPower",40);        % Units: Watts
 
-sensibility=-102 %dbm
+sensibility= -100 %dbm
 max_signal=-5;
 sigStrengths = sensibility:max_signal;
 
@@ -146,14 +206,26 @@ sigStrengths = sensibility:max_signal;
 %coverage(tx,"freespace","SignalStrengths",sigStrengths,'MaxRange',500,Type='power');
 %logely rice
 %o máximo de alcance numa estação base pode ser até 30 km.
-coverage(tx,"freespace","SignalStrengths",sigStrengths,'MaxRange',30000,Resolution="auto");
-pattern(tx(1),fq1)
-pattern(tx(2),fq2)
-pattern(tx(3),fq3)
-pattern(tx(4),fq4)
-pattern(tx(5),fq5)
-pattern(tx(6),fq6)
-pattern(tx(7),fq7)
+coverage(tx,"freespace","SignalStrengths",sigStrengths,'MaxRange',5000,Resolution="auto");
+% 
+% coverage(tx2,"freespace","SignalStrengths",sigStrengths,'MaxRange',5000,Resolution="auto");
+% coverage(tx3,"freespace","SignalStrengths",sigStrengths,'MaxRange',5000,Resolution="auto");
+% coverage(tx4,"freespace","SignalStrengths",sigStrengths,'MaxRange',5000,Resolution="auto");
+% coverage(tx5,"freespace","SignalStrengths",sigStrengths,'MaxRange',5000,Resolution="auto");
+% coverage(tx6,"freespace","SignalStrengths",sigStrengths,'MaxRange',5000,Resolution="auto");
+% 
+% coverage(tx7,"freespace","SignalStrengths",sigStrengths,'MaxRange',5000,Resolution="auto");
+
+
+
+
+pattern(tx1,fq1)
+pattern(tx2,fq2)
+pattern(tx3,fq3)
+pattern(tx4,fq4)
+pattern(tx5,fq5)
+pattern(tx6,fq6)
+pattern(tx7,fq7)
 
 
 
